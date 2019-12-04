@@ -1,4 +1,5 @@
-with open("day_1.txt") as inf:
+from os import sep
+with open(f"inputs{sep}day_1.txt") as inf:
     lines = [line.strip() for line in inf.readlines()]
 
 def get_freq():

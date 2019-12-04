@@ -1,4 +1,6 @@
-with open("day_2.txt") as rf:
+from os import sep
+
+with open(f"inputs{sep}day_2.txt") as rf:
     lines = [line.strip() for line in rf.readlines()]
 
 def find_diff():
