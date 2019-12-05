@@ -3,7 +3,6 @@ from os import sep
 with open(f'inputs{sep}day_5.txt') as rf:
     intcodes = [int(l) for l in rf.readline().split(",")]
 
-#okay this needs work, this is just abysmal lmfao
 def execute_computer(values, initial):
     jump_length = {
         1:4,
@@ -16,71 +15,46 @@ def execute_computer(values, initial):
         8:4,
         99:0
     }
+    opcodes = set(jump_length.keys())
     i = 0
     has_jumped = False
     while i < len(values):
         opcode = values[i]
-        if opcode == 1: values[values[i+3]] = values[values[i+1]] + values[values[i + 2]]
-        elif opcode == 2: values[values[i+3]] = values[values[i + 1]] * values[values[i + 2]]
-        elif opcode == 3: values[values[i+1]] = initial
-        elif opcode == 4: print(values[values[i+1]])
+        input_one = values[i+1]
+        input_two = values[i+2] if i + 2 < len(values) - 1 else 0
+        input_three = values[i + 3] if i + 3 < len(values) - 1 else 0
+        if not opcode in opcodes:
+            instruction = str(opcode)
+            opcode = int(instruction[-2:])
+            input_one = i+1 if int(instruction[-3]) == 1 else values[i+1]
+            input_two = i+2 if len(instruction) >= 4 and int(instruction[-4]) == 1 else values[i+2]
+            input_three = i+3 if len(instruction) >= 5 and int(instruction[-5]) == 1 else values[i+3]
+
+        if opcode == 1: values[input_three] = values[input_one] + values[input_two]
+        elif opcode == 2: values[input_three] = values[input_one] * values[input_two]
+        elif opcode == 3: values[input_one] = initial
+        elif opcode == 4: print(values[input_one])
         elif opcode == 5:
-            if values[values[i+1]] != 0:
-                i = values[values[i+2]]
+            if values[input_one] != 0:
+                i = values[input_two]
                 has_jumped = True
         elif opcode == 6:
-            if values[values[i+1]] == 0:
-                i = values[values[i+2]]
+            if values[input_one] == 0:
+                i = values[input_two]
                 has_jumped = True
             pass
         elif opcode == 7:
-            if values[values[i+1]] < values[values[i+2]]:
-                values[values[i+3]] = 1
+            if values[input_one] < values[input_two]:
+                values[input_three] = 1
             else:
-                values[values[i+3]] = 0
+                values[input_three] = 0
         elif opcode == 8:
-            if values[values[i+1]] == values[values[i+2]]:
-                values[values[i+3]] = 1
+            if values[input_one] == values[input_two]:
+                values[input_three] = 1
             else:
-                values[values[i + 3]] = 0
+                values[input_three] = 0
         elif opcode == 99:
             break
-        else:
-            instruction = str(opcode)
-            opcode = int(instruction[-2:])
-            mode_one = int(instruction[-3])
-            mode_two = int(instruction[-4]) if len(instruction) >= 4 else 0
-            mode_three = int(instruction[-5]) if len(instruction) >= 5 else 0
-            # print(instruction, opcode, mode_one, mode_two, mode_three)
-
-            if opcode == 1:
-                values[(i+3) if mode_three == 1 else values[i+3]] = (values[i+1] if mode_one == 1 else values[values[i+1]]) + (values[i+2] if mode_two == 1 else values[values[i+2]])
-            elif opcode == 2:
-                values[(i+3) if mode_three == 1 else values[i+3]] = (values[i+1] if mode_one == 1 else values[values[i+1]]) * (values[i+2] if mode_two == 1 else values[values[i+2]])
-            elif opcode == 3: values[(i+1) if mode_one == 1 else values[i+1]] = initial
-            elif opcode == 4: print(values[(i+1) if mode_one == 1 else values[i+1]])
-            elif opcode == 5:
-                if values[(i + 1) if mode_one == 1 else values[i+1]] != 0:
-                    i = values[(i+2) if mode_two == 1 else values[i + 2]]
-                    has_jumped = True
-            elif opcode == 6:
-                if values[(i + 1) if mode_one == 1 else values[i+1]] == 0:
-                    i = values[(i+2) if mode_two == 1 else values[i + 2]]
-                    has_jumped = True
-                pass
-            elif opcode == 7:
-                if values[(i + 1) if mode_one == 1 else values[i+1]] < values[(i+2) if mode_two == 1 else values[i + 2]]:
-                    values[(i+3) if mode_three == 1 else values[i+3]] = 1
-                else:
-                    values[(i+3) if mode_three == 1 else values[i+3]] = 0
-            elif opcode == 8:
-                if values[(i + 1) if mode_one == 1 else values[i+1]] == values[(i+2) if mode_two == 1 else values[i + 2]]:
-                    values[(i+3) if mode_three == 1 else values[i+3]] = 1
-                else:
-                    values[(i+3) if mode_three == 1 else values[i+3]] = 0
-            elif opcode == 99:
-                break
-
         i += jump_length[opcode] if not has_jumped else 0
         has_jumped = False
 
