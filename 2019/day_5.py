@@ -58,13 +58,10 @@ def execute_computer(values, initial):
         i += jump_length[opcode] if not has_jumped else 0
         has_jumped = False
 
-
-if __name__ == '__main__':
-    #Part 1:
-    execute_computer(intcodes.copy(), 1)
-    #Answer: 12896948
-    print("----")
-    #Part 2:
-    execute_computer(intcodes.copy(), 5)
-    #Answer: 7704130
-    pass
+#Part 1:
+execute_computer(intcodes.copy(), 1)
+#Answer: 12896948
+print("----")
+#Part 2:
+execute_computer(intcodes.copy(), 5)
+#Answer: 7704130

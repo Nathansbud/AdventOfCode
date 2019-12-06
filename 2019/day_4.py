@@ -1,7 +1,5 @@
-password = "372037-905157"
-password_digits = [int(p) for p in list(password) if p is not "-"]
-
-lower, upper = password.split("-")
+from os import sep
+with open(f'inputs{sep}day_4.txt') as rf: lower, upper = rf.readline().strip("\n").split("-")
 
 def calculate_passwords():
     matches = set()
@@ -34,9 +32,6 @@ def calculate_passwords():
         dc = 1
     return matches, matches_part_2
 
-
-
-if __name__ == '__main__':
-    #Part 1, 2:
-    print([len(l) for l in calculate_passwords()])
-    #Answer: 481, 299
+#Part 1, 2:
+print([len(l) for l in calculate_passwords()])
+#Answer: 481, 299
