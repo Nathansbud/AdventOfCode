@@ -1,5 +1,5 @@
 from os import sep
-with open(f"inputs{sep}day_6.txt") as rf:
+with open(f"inputs{sep}rana.txt") as rf:
     orbit_map = [l.strip("\n").split(")") for l in rf.readlines()]
 
 planets = {}
