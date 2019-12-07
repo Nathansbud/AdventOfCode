@@ -5,7 +5,7 @@ with open(f'inputs{sep}day_7.txt') as rf: intcodes = [int(l) for l in rf.readlin
 phase_settings = [p for p in permutations("01234")]
 feedback_settings = [p for p in permutations("56789")]
 
-def execute_computer(values, initial, inp):
+def execute_computer(values, initial, inp, iptr=0):
     jump_length = {
         1:4,
         2:4,
@@ -18,11 +18,12 @@ def execute_computer(values, initial, inp):
         99:0
     }
     opcodes = set(jump_length.keys())
-    i = 0
+    i = iptr
     has_jumped = False
     has_input = False
     while i < len(values):
         opcode = values[i]
+        if opcode == 99: return None, i
         input_one = values[i+1]
         input_two = values[i+2] if i + 2 < len(values) - 1 else 0
         input_three = values[i + 3] if i + 3 < len(values) - 1 else 0
@@ -42,7 +43,7 @@ def execute_computer(values, initial, inp):
             else:
                 values[input_one] = inp
         elif opcode == 4:
-            return values[input_one]
+            return values[input_one], i+2
         elif opcode == 5:
             if values[input_one] != 0:
                 i = values[input_two]
@@ -63,7 +64,7 @@ def execute_computer(values, initial, inp):
             else:
                 values[input_three] = 0
         elif opcode == 99:
-            return
+            return None, i
         i += jump_length[opcode] if not has_jumped else 0
         has_jumped = False
 
@@ -72,7 +73,7 @@ start = 0
 outputs = set()
 for setting in phase_settings:
     for n in range(len(setting)):
-        start = execute_computer(intcodes.copy(), int(setting[n]), int(start))
+        start = execute_computer(intcodes.copy(), int(setting[n]), int(start))[0]
     outputs.add(start)
     start = 0
 print(max(outputs))
@@ -80,12 +81,22 @@ print(max(outputs))
 #Part 2:
 start = 0
 outputs = set()
+
 for setting in feedback_settings:
+    amp_memory = [intcodes.copy()] * 5
+    amp_pointer = [0] * 5
     n = 0
+    last_output = 0
     while True:
-        start = execute_computer(intcodes.copy(), int(setting[n % 5]), int(start))
+        out = execute_computer(amp_memory[n % 5], int(setting[n%5]), int(start), iptr=amp_pointer[n%5])
+        if out[0]:
+            start = out[0]
+            if n % 5 == 4: last_output = start
+        elif n % 5 == 4:
+            break
+        amp_pointer[n % 5] = out[1]
         n += 1
-    outputs.add(start)
+    outputs.add(last_output)
     start = 0
 print(max(outputs))
 #Answer:
