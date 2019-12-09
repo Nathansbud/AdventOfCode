@@ -80,23 +80,26 @@ print(max(outputs))
 #Answer: 21760
 #Part 2:
 start = 0
-outputs = set()
+outputs = []
+keep_looping = True
 
 for setting in feedback_settings:
-    amp_memory = [intcodes.copy()] * 5
-    amp_pointer = [0] * 5
+    amp_memory = [tc.copy()] * 5
+    amp_pointer = [0]*5
     n = 0
     last_output = 0
-    while True:
-        out = execute_computer(amp_memory[n % 5], int(setting[n%5]), int(start), iptr=amp_pointer[n%5])
+    while keep_looping:
+        out = execute_computer(amp_memory[n%5], int(setting[n%5]), int(start), iptr=amp_pointer[n%5])
+        amp_pointer[n % 5] = out[1]
+
         if out[0]:
             start = out[0]
-            if n % 5 == 4: last_output = start
+            if n % 5 == 4:
+                last_output = start
         elif n % 5 == 4:
+            outputs.append(last_output)
             break
-        amp_pointer[n % 5] = out[1]
         n += 1
-    outputs.add(last_output)
     start = 0
 print(max(outputs))
 #Answer:
