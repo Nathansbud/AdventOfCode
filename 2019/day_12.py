@@ -56,6 +56,7 @@ print(sum([p.get_total() for p in planets]))
 universe_states = set()
 count = 0
 #This WILL work, just take...probably forever? Took ~5 mins to do 3.5 mil, and the output is likely in the trillions...based off Reddit data, this should take around 800 years.
+planets = [Planet(x=int(coords[0].split(",")[0]), y=int(coords[1].split(",")[0]), z=int(coords[2].split(",")[0])) for coords in lines]
 def state_hash(ps):
     global count
     count+=1
@@ -66,8 +67,14 @@ def state_hash(ps):
         print(f"Done! Took {count} steps to repeat!")
         exit(0)
 
-while True:
-    update_planets(planets)
-    state_hash(planets)
+def naive_solve(ps):
+    while True:
+        update_planets(ps)
+        state_hash(ps)
+
+def calculate_periods():
+    pass
+
+
 #Answer:
 
